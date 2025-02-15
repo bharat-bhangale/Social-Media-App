@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { connectDB } from "./configs/db.js";
 
 // CONFIGURATION
 const __filename = fileURLToPath(import.meta.url);
@@ -39,16 +40,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // DATABASE CONNECTION
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("Database connected successfully");
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    process.exit(1);
-  }
-};
-
 await connectDB();
 
 app.get("/", (req, res) => {
