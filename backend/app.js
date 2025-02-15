@@ -13,8 +13,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
@@ -35,6 +37,19 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+// DATABASE CONNECTION
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Database connected successfully");
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    process.exit(1);
+  }
+};
+
+await connectDB();
 
 app.get("/", (req, res) => {
   res.json("Hello World!");
