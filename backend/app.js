@@ -8,8 +8,8 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { connectDB } from "./configs/db.js";
-import userRouter from "./routes/UserRoutes.js";
-import { registerUser } from "./controllers/UserController.js";
+import authRouter from "./routes/UserRoutes.js";
+import { register } from "./controllers/AuthController.js";
 
 // CONFIGURATION
 dotenv.config();
@@ -42,8 +42,8 @@ const upload = multer({ storage });
 
 // ROUTES
 app.get("/", (req, res) => res.json("Hello World!"));
-app.post("/auth/user/signup", upload.single("picture"), registerUser);
-app.use("/auth/user", userRouter);
+app.post("/auth/user/signup", upload.single("picture"), register);
+app.use("/auth/user", authRouter);
 
 // DATABASE CONNECTION
 await connectDB();
