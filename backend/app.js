@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import multer from "multer";
@@ -9,15 +8,17 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { connectDB } from "./configs/db.js";
+import userRouter from "./routes/UserRoutes.js";
+import { registerUser } from "./controllers/UserController.js";
 
 // CONFIGURATION
+dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// MIDDLEWARES
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
@@ -37,15 +38,18 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
+
+// ROUTES
+app.get("/", (req, res) => res.json("Hello World!"));
+app.post("/auth/user/signup", upload.single("picture"), registerUser);
+app.use("/auth/user", userRouter);
 
 // DATABASE CONNECTION
 await connectDB();
 
-app.get("/", (req, res) => {
-  res.json("Hello World!");
-});
+// START SERVER ONLY AFTER DB CONNECTS
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`🚀 Server is running on http://localhost:${PORT}`)
+);
