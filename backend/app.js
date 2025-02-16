@@ -8,7 +8,8 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { connectDB } from "./configs/db.js";
-import authRouter from "./routes/UserRoutes.js";
+import authRouter from "./routes/AuthRoutes.js";
+import userRouter from "./routes/UserRoutes.js";
 import { register } from "./controllers/AuthController.js";
 
 // CONFIGURATION
@@ -44,12 +45,12 @@ const upload = multer({ storage });
 app.get("/", (req, res) => res.json("Hello World!"));
 app.post("/auth/user/signup", upload.single("picture"), register);
 app.use("/auth/user", authRouter);
+app.use("/api/users", userRouter);
 
 // DATABASE CONNECTION
 await connectDB();
 
 // START SERVER ONLY AFTER DB CONNECTS
-
 app.listen(PORT, () =>
   console.log(`🚀 Server is running on http://localhost:${PORT}`)
 );

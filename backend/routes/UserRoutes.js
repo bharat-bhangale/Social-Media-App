@@ -1,8 +1,16 @@
 import express from "express";
-import { login } from "../controllers/AuthController.js";
+import {
+  getUser,
+  getUserFriends,
+  addRemoveFriend,
+} from "../controllers/UserController.js";
+import { verifyToken } from "../middleware/Auth.js";
 
-const authRouter = express.Router();
+const userRouter = express.Router();
 
-authRouter.post("/login", login);
+userRouter.get("/:id", verifyToken, getUser);
+userRouter.get("/:id/friends", verifyToken, getUserFriends);
 
-export default authRouter;
+userRouter.patch("/:id/friendId", verifyToken, addRemoveFriend);
+
+export default userRouter;
